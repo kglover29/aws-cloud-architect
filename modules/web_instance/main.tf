@@ -80,7 +80,7 @@ resource "aws_instance" "web" {
 
   tags                   = "${var.tags_map}"
   key_name               = "${lookup(var.key_name, var.region)}"
-  iam_instance_profile   = "STATIC_ROLE_NAME_SHOULD_BE_A_VARIABLE"
+  iam_instance_profile   = "arn:aws:iam::699045305052:role/aws-cloud-architect-web-role"
   # subnet_id              = "${lookup(var.subnet_id, var.region)}"
   vpc_security_group_ids = ["${aws_security_group.web-sg.id}"]
 

@@ -10,6 +10,8 @@ variable "region" {}
 
 variable "profile" {}
 
+variable "instance_profile" {}
+
 variable "vpc_id" {}
 
 # variable "subnet_id" {}
