@@ -1,6 +1,6 @@
 # Specify the provider and access details
 provider "aws" {
-  region  = "${var.aws_region}"
+  region  = "${var.region}"
   profile = "${var.profile}"
 }
 
@@ -79,9 +79,9 @@ resource "aws_instance" "web" {
   key_name               = "${var.key_name}"
 
   tags                   = "${var.tags_map}"
-  key_name               = "${lookup(var.key_name, var.aws_region)}"
+  key_name               = "${lookup(var.key_name, var.region)}"
   iam_instance_profile   = "STATIC_ROLE_NAME_SHOULD_BE_A_VARIABLE"
-  subnet_id              = "${lookup(var.aws_subnet_id, var.aws_region)}"
+  # subnet_id              = "${lookup(var.subnet_id, var.region)}"
   vpc_security_group_ids = ["${aws_security_group.web-sg.id}"]
 
   /*user_data = "${file("user_data")}"*/

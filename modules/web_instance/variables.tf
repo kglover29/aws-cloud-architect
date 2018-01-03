@@ -12,6 +12,8 @@ variable "profile" {}
 
 variable "vpc_id" {}
 
+# variable "subnet_id" {}
+
 variable "team_name" {}
 
 variable "tags_map" {
