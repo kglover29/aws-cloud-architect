@@ -28,7 +28,7 @@ data "template_file" "init" {
   $admin.SetPassword("${var.admin_password}")
   netsh advfirewall firewall add rule name="HTTP in" protocol=TCP dir=in profile=any localport=80 remoteip=any localip=any action=allow
   Install-WindowsFeature -name Web-Server
-  Copy-S3Object -BucketName kglover-aws-cloud-architect -Key  -LocalFolder c:\Inetpub\wwwroot
+  Copy-S3Object -BucketName kglover-aws-cloud-architect -KeyPrefix config/  -LocalFolder c:\Inetpub\wwwroot
     </powershell>
   /* iwr -useb https://omnitruck.chef.io/install.ps1 | iex; install -project chefdk -channel stable -version 0.16.28 */
 
@@ -43,19 +43,19 @@ EOF
 resource "aws_security_group" "web-sg" {
   name        = "allow-web"
   tags        = "${var.tags_map}"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = "${var.vpc_id}"
 
   ingress {
     from_port   = 80
     to_port     = 80
-    protocol    = "-1"
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
     from_port       = 80
     to_port         = 80
-    protocol        = "-1"
+    protocol        = "tcp"
     cidr_blocks     = ["0.0.0.0/0"]
   }
 }
@@ -76,10 +76,10 @@ resource "aws_instance" "web" {
   ami                    = "${data.aws_ami.amazon_windows_2016.id}"
 
   # Not sure if I need to have access or keys to the box
-  key_name               = "${var.key_name}"
+  # key_name               = "${var.key_name}"
 
   tags                   = "${var.tags_map}"
-  key_name               = "${lookup(var.key_name, var.region)}"
+  # key_name               = "${lookup(var.key_name, var.region)}"
   iam_instance_profile   = "${var.instance_profile}"
   # subnet_id              = "${lookup(var.subnet_id, var.region)}"
   vpc_security_group_ids = ["${aws_security_group.web-sg.id}"]

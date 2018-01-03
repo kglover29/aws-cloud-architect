@@ -1,7 +1,8 @@
 region = "us-west-2"
 profile = "kevin_personal"
-vpc_id = "vpc-7ddb7d18"
-instance_profile = "arn:aws:iam::699045305052:role/aws-cloud-architect-web-role"
+vpc_id = "vpc-30d37e55"
+instance_type = "t2.micro"
+instance_profile = "aws-cloud-architect-web-role"
 
 tags_map = {
   "NAME"        = ""

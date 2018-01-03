@@ -16,14 +16,12 @@ variable "vpc_id" {}
 
 # variable "subnet_id" {}
 
-variable "team_name" {}
-
 variable "tags_map" {
   description = "Resource tags to set on all resources in module"
   type = "map"
 }
 
-variable "key_name" {
-  discription = ""
-  default = ""
-}
+# variable "key_name" {
+#   description = ""
+#   default = ""
+# }

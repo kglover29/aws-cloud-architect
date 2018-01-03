@@ -1,6 +1,6 @@
 provider "aws" {
-  region  = "${$var.region}"
-  profile = "${$var.profile}"
+  region  = "${var.region}"
+  profile = "${var.profile}"
 }
 
 terraform {
@@ -14,13 +14,15 @@ terraform {
 }
 
 module "web_instance" {
-  region         = "us-west-2"
-  instance_type  = "${var.instance_type}"
-  admin_password = "${var.admin_password}"
-  vpc_id         = "${var.vpc_id}"
-  subnet_id      = "${var.subnet_id}"
-  tags_map       = "${var.tags_map}"
-  profile        = "${var.profile}"
+  source           = "modules/web_instance"
+  region           = "us-west-2"
+  instance_type    = "${var.instance_type}"
+  admin_password   = "${var.admin_password}"
+  vpc_id           = "${var.vpc_id}"
+  # subnet_id      = "${var.subnet_id}"
+  instance_profile = "${var.instance_profile}"
+  tags_map         = "${var.tags_map}"
+  profile          = "${var.profile}"
 }
 
 # module "s3_web_hosting" {
