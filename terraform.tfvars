@@ -1,5 +1,5 @@
 region = "us-west-2"
-profile = "kevin_root"
+profile = "kevin_personal"
 
 tags_map = {
   "NAME"        = ""

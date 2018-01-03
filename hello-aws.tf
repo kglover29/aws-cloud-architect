@@ -9,7 +9,7 @@ terraform {
     bucket  = "kglover-aws-cloud-architect"
     encrypt = true
     key     = "hello-aws.terraform.tfstate"
-    profile = "kevin_root"
+    profile = "kevin_personal"
   }
 }
 
