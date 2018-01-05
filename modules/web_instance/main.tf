@@ -12,6 +12,7 @@ data "aws_ami" "amazon_windows_2016" {
   filter {
     name   = "name"
     values = ["Windows_Server-2016-English-Core-Base-*"]
+    # values = ["Windows_Server-2012-R2_RTM-English-64Bit-Base-*"]
   }
 }
 
@@ -28,7 +29,7 @@ data "template_file" "init" {
   $admin.SetPassword("${var.admin_password}")
   netsh advfirewall firewall add rule name="HTTP in" protocol=TCP dir=in profile=any localport=80 remoteip=any localip=any action=allow
   Install-WindowsFeature -name Web-Server
-  Copy-S3Object -BucketName kglover-aws-cloud-architect -KeyPrefix config/  -LocalFolder c:\Inetpub\wwwroot
+  Copy-S3Object -Region us-west-2 -BucketName kglover-aws-cloud-architect -KeyPrefix config -LocalFolder c:\inetpub\wwwroot
     </powershell>
   /* iwr -useb https://omnitruck.chef.io/install.ps1 | iex; install -project chefdk -channel stable -version 0.16.28 */
 
@@ -60,10 +61,29 @@ resource "aws_security_group" "web-sg" {
   }
 }
 
+resource "aws_security_group" "rdp-sg" {
+  name        = "allow-rdp"
+  tags        = "${var.tags_map}"
+  vpc_id      = "${var.vpc_id}"
+
+  ingress {
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["69.167.25.97/32"]
+  }
+
+  egress {
+    from_port       = 3389
+    to_port         = 3389
+    protocol        = "tcp"
+    cidr_blocks     = ["69.167.25.97/32"]
+  }
+}
+
 resource "aws_eip" "bar" {
   vpc = true
   instance                  = "${aws_instance.web.id}"
-  # depends_on                = ["aws_internet_gateway.gw"]
 }
 
 resource "aws_instance" "web" {
@@ -76,14 +96,13 @@ resource "aws_instance" "web" {
   ami                    = "${data.aws_ami.amazon_windows_2016.id}"
 
   # Not sure if I need to have access or keys to the box
-  # key_name               = "${var.key_name}"
+  key_name               = "ebadmin-key-pair-us-oregon"
 
   tags                   = "${var.tags_map}"
   # key_name               = "${lookup(var.key_name, var.region)}"
   iam_instance_profile   = "${var.instance_profile}"
   # subnet_id              = "${lookup(var.subnet_id, var.region)}"
-  vpc_security_group_ids = ["${aws_security_group.web-sg.id}"]
-
+  vpc_security_group_ids = ["${aws_security_group.web-sg.id}", "${aws_security_group.rdp-sg.id}"]
   /*user_data = "${file("user_data")}"*/
   user_data              = "${data.template_file.init.rendered}"
 }
