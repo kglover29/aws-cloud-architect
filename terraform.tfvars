@@ -5,8 +5,8 @@ instance_type = "t2.micro"
 instance_profile = "aws-cloud-architect-web-role"
 
 tags_map = {
-  "NAME"        = ""
-  "APPLICATION" = "website"
-  "OWNER ALIAS" = "kglover29@gmail.com"
-  "ENVIRONMENT" = "test"
+  "Name"        = "aws-cloud-architect"
+  "Application" = "website"
+  "Owner Alias" = "kglover29@gmail.com"
+  "Environment" = "test"
 }

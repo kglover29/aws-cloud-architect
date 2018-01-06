@@ -19,7 +19,6 @@ module "web_instance" {
   instance_type    = "${var.instance_type}"
   admin_password   = "${var.admin_password}"
   vpc_id           = "${var.vpc_id}"
-  # subnet_id      = "${var.subnet_id}"
   instance_profile = "${var.instance_profile}"
   tags_map         = "${var.tags_map}"
   profile          = "${var.profile}"

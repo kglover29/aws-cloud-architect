@@ -12,7 +12,6 @@ data "aws_ami" "amazon_windows_2016" {
   filter {
     name   = "name"
     values = ["Windows_Server-2016-English-Core-Base-*"]
-    # values = ["Windows_Server-2012-R2_RTM-English-64Bit-Base-*"]
   }
 }
 
@@ -59,27 +58,35 @@ resource "aws_security_group" "web-sg" {
     protocol        = "tcp"
     cidr_blocks     = ["0.0.0.0/0"]
   }
-}
-
-resource "aws_security_group" "rdp-sg" {
-  name        = "allow-rdp"
-  tags        = "${var.tags_map}"
-  vpc_id      = "${var.vpc_id}"
-
-  ingress {
-    from_port   = 3389
-    to_port     = 3389
-    protocol    = "tcp"
-    cidr_blocks = ["69.167.25.97/32"]
-  }
 
   egress {
-    from_port       = 3389
-    to_port         = 3389
-    protocol        = "tcp"
-    cidr_blocks     = ["69.167.25.97/32"]
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    # cidr_blocks = ["0.0.0.0/0"]
+    prefix_list_ids = ["pl-68a54001"]
   }
 }
+
+# resource "aws_security_group" "rdp-sg" {
+#   name        = "allow-rdp"
+#   tags        = "${var.tags_map}"
+#   vpc_id      = "${var.vpc_id}"
+#
+#   ingress {
+#     from_port   = 3389
+#     to_port     = 3389
+#     protocol    = "tcp"
+#     cidr_blocks = ["97.113.126.26/32"]
+#   }
+#
+#   egress {
+#     from_port       = 3389
+#     to_port         = 3389
+#     protocol        = "tcp"
+#     cidr_blocks     = ["97.113.126.26/32"]
+#   }
+# }
 
 resource "aws_eip" "bar" {
   vpc = true
@@ -96,13 +103,10 @@ resource "aws_instance" "web" {
   ami                    = "${data.aws_ami.amazon_windows_2016.id}"
 
   # Not sure if I need to have access or keys to the box
-  key_name               = "ebadmin-key-pair-us-oregon"
+  # key_name               = "ebadmin-key-pair-us-oregon"
 
   tags                   = "${var.tags_map}"
-  # key_name               = "${lookup(var.key_name, var.region)}"
   iam_instance_profile   = "${var.instance_profile}"
-  # subnet_id              = "${lookup(var.subnet_id, var.region)}"
-  vpc_security_group_ids = ["${aws_security_group.web-sg.id}", "${aws_security_group.rdp-sg.id}"]
-  /*user_data = "${file("user_data")}"*/
+  vpc_security_group_ids = ["${aws_security_group.web-sg.id}"]
   user_data              = "${data.template_file.init.rendered}"
 }
