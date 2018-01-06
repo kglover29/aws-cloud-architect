@@ -1,5 +1,0 @@
-**/*.tfstate*
-**/.terraform/*
-.DS_Store
-*.un~
-secrets.tfvars
