@@ -27,8 +27,15 @@ data "template_file" "init" {
   $admin = [ADSI]("WinNT://./administrator, user")
   $admin.SetPassword("${var.admin_password}")
   netsh advfirewall firewall add rule name="HTTP in" protocol=TCP dir=in profile=any localport=80 remoteip=any localip=any action=allow
+
+  Get-Disk | where partitionstyle -eq 'raw' | Initialize-Disk -PartitionStyle MBR -PassThru | New-Partition -DriveLetter D -UseMaximumSize | Format-Volume -FileSystem NTFS -NewFileSystemLabel "disk2" -Confirm:$false
+
   Install-WindowsFeature -name Web-Server
-  Copy-S3Object -Region us-west-2 -BucketName kglover-aws-cloud-architect -KeyPrefix config -LocalFolder c:\inetpub\wwwroot
+
+  Import-Module WebAdministration
+  Set-ItemProperty 'IIS:\Sites\Default Web Site' -Name physicalPath -Value D:\inetpub\wwwroot
+
+  Copy-S3Object -Region us-west-2 -BucketName kglover-aws-cloud-architect -KeyPrefix config -LocalFolder D:\inetpub\wwwroot
     </powershell>
   /* iwr -useb https://omnitruck.chef.io/install.ps1 | iex; install -project chefdk -channel stable -version 0.16.28 */
 
@@ -67,25 +74,25 @@ resource "aws_security_group" "web-sg" {
   }
 }
 
-# resource "aws_security_group" "rdp-sg" {
-#   name        = "allow-rdp"
-#   tags        = "${var.tags_map}"
-#   vpc_id      = "${var.vpc_id}"
-#
-#   ingress {
-#     from_port   = 3389
-#     to_port     = 3389
-#     protocol    = "tcp"
-#     cidr_blocks = ["97.113.126.26/32"]
-#   }
-#
-#   egress {
-#     from_port       = 3389
-#     to_port         = 3389
-#     protocol        = "tcp"
-#     cidr_blocks     = ["97.113.126.26/32"]
-#   }
-# }
+resource "aws_security_group" "rdp-sg" {
+  name        = "allow-rdp"
+  tags        = "${var.tags_map}"
+  vpc_id      = "${var.vpc_id}"
+
+  ingress {
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = ["97.113.126.26/32"]
+  }
+
+  egress {
+    from_port       = 3389
+    to_port         = 3389
+    protocol        = "tcp"
+    cidr_blocks     = ["97.113.126.26/32"]
+  }
+}
 
 resource "aws_eip" "bar" {
   vpc = true
@@ -102,10 +109,15 @@ resource "aws_instance" "web" {
   ami                    = "${data.aws_ami.amazon_windows_2016.id}"
 
   # Not sure if I need to have access or keys to the box
-  # key_name               = "ebadmin-key-pair-us-oregon"
+  key_name               = "ebadmin-key-pair-us-oregon"
 
   tags                   = "${var.tags_map}"
   iam_instance_profile   = "${var.instance_profile}"
-  vpc_security_group_ids = ["${aws_security_group.web-sg.id}"]
+  vpc_security_group_ids = ["${aws_security_group.web-sg.id}", "${aws_security_group.rdp-sg.id}"]
   user_data              = "${data.template_file.init.rendered}"
+
+  ebs_block_device {
+    device_name = "xvdf"
+    volume_size = "1"
+  }
 }
