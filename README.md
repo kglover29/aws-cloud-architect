@@ -12,10 +12,6 @@ Home Depot's tagline is 'More saving. More doing'. Moving their data center-cent
 
 ### Architecture
 
-<div style="width: 640px; height: 480px; margin: 10px; position: relative;">
-    <iframe allowfullscreen frameborder="0" style="width:640px; height:480px"src="https://www.lucidchart.com/documents/embeddedchart/6914de09-096b-4b26-b7aa-f9c5eecb72f4" id="Fjk52bMRbHal"></iframe>
-</div>
-
 ![alt text](https://www.lucidchart.com/publicSegments/view/670300fb-a10d-4d4e-925e-d2aaf9b5aa89/image.jpeg)
 
 ### Assumptions
