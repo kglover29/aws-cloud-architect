@@ -11,7 +11,7 @@ Prepared by Kevin Glover, Solutions Architect, AWS
 
 Home Depot's tagline is 'More saving. More doing'. Moving their data center-centric architecture to AWS positions the home improvement supplier for exactly that - more saving, and more doing. This recommendation outlines a scalable, elastic, redundant cloud architecture for Home Depot's e-commerce platform that positions the retailer for organic growth.
 
-### Architecture
+## Architecture
 
 ![alt text](https://www.lucidchart.com/publicSegments/view/670300fb-a10d-4d4e-925e-d2aaf9b5aa89/image.jpeg)
 
