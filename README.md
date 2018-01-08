@@ -6,6 +6,7 @@ http://52.88.217.123/
 # Cloud Architecture - Customer Recommendation
 
 Customer: Home Depot
+
 Prepared by Kevin Glover, Solutions Architect, AWS
 
 Home Depot's tagline is 'More saving. More doing'. Moving their data center-centric architecture to AWS positions the home improvement supplier for exactly that - more saving, and more doing. This recommendation outlines a scalable, elastic, redundant cloud architecture for Home Depot's e-commerce platform that positions the retailer for organic growth.
